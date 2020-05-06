@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AppDomain.Common.ValueObjects;
+﻿using AppDomain.Common.ValueObjects;
 
 namespace AppDomain.ValueObjects
 {

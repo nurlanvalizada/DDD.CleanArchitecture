@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using AppDomain.Common.DomainEvents;
+﻿using AppDomain.Common.DomainEvents;
 using AppDomain.Entities;
 
 namespace AppDomain.Events

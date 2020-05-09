@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Text;
 using AutoMapper;
 
 namespace Application.Common.Mappings
@@ -29,7 +27,6 @@ namespace Application.Common.Mappings
                                  ?? type.GetInterface("IMapFrom`1").GetMethod("Mapping");
 
                 methodInfo?.Invoke(instance, new object[] { this });
-
             }
         }
     }

@@ -10,9 +10,9 @@ namespace AppDomain.Entities
 
         public bool IsCompleted { get; set; }
 
-        public TaskPriority Priority { get; set; }
+        public TaskPriority Priority { get; set; } = TaskPriority.Medium;
 
-        public TaskState State { get; set; }
+        public TaskState State { get; set; } = TaskState.Active;
 
 
         public DateTime CreatedDate { get; set; }

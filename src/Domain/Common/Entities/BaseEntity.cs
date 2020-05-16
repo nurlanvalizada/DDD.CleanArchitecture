@@ -1,6 +1,8 @@
-﻿namespace AppDomain.Common.Entities
+﻿using AppDomain.Common.DomainEvents;
+
+namespace AppDomain.Common.Entities
 {
-    public abstract class BaseEntity<T> : IEntity
+    public abstract class BaseEntity<T> : HaveDomainEvents, IEntity
     {
         public T Id { get; set; }
     }

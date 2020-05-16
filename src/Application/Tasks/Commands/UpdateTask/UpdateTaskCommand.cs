@@ -17,6 +17,8 @@ namespace Application.Tasks.Commands.UpdateTask
         public string Name { get; set; }
 
         public TaskPriority Priority { get; set; }
+
+        public bool IsComplete { get; set; }
     }
 
     public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
@@ -40,6 +42,12 @@ namespace Application.Tasks.Commands.UpdateTask
             }
 
             _mapper.Map(request, task);
+
+
+            if (request.IsComplete)
+                task.MarkComplete();
+            else
+                task.MarkUnComplete();
 
             await _taskRepository.Commit(cancellationToken);
 

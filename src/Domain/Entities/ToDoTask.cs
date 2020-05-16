@@ -1,6 +1,7 @@
 ﻿using System;
 using AppDomain.Common.Entities;
 using AppDomain.Enums;
+using AppDomain.Events;
 
 namespace AppDomain.Entities
 {
@@ -8,7 +9,7 @@ namespace AppDomain.Entities
     {
         public string Name { get; set; }
 
-        public bool IsCompleted { get; set; }
+        public bool IsCompleted { get;  private set; }
 
         public TaskPriority Priority { get; set; } = TaskPriority.Medium;
 
@@ -31,6 +32,16 @@ namespace AppDomain.Entities
 
         public long? DeletedUserId { get; set; }
 
+        public void MarkComplete()
+        {
+            IsCompleted = true;
+            Events.Add(new TaskCompletedEvent(this));
+        }
+
+        public void MarkUnComplete()
+        {
+            IsCompleted = false;
+        }
 
         //navigation properties
         public int AssignedPersonId { get; set; }

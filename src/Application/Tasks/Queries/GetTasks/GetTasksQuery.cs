@@ -3,7 +3,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using AppDomain.Common.Interfaces;
 using AppDomain.Entities;
-using Application.Tasks.Queries.GetTasksQuery;
 using AutoMapper;
 using AutoMapper.QueryableExtensions;
 using MediatR;

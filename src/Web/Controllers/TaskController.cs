@@ -3,7 +3,6 @@ using Application.Tasks.Commands.CreateTask;
 using Application.Tasks.Commands.DeleteTask;
 using Application.Tasks.Commands.UpdateTask;
 using Application.Tasks.Queries.GetTasks;
-using Application.Tasks.Queries.GetTasksQuery;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Web.Controllers
@@ -11,9 +10,9 @@ namespace Web.Controllers
     public class TaskController : ApiController
     {
         [HttpGet]
-        public async Task<ActionResult<TasksVm>> Get()
+        public async Task<ActionResult<TasksVm>> Get([FromQuery] GetTasksQuery query)
         {
-           return await Mediator.Send(new GetTasksQuery() {Name = "test"});
+           return await Mediator.Send(query);
         }
 
         [HttpPost]

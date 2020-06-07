@@ -1,4 +1,4 @@
-﻿namespace Application.Tasks.Queries.GetTasksQuery
+﻿namespace Application.Tasks.Queries.GetTasks
 {
     public class EnumValueDto
     {

@@ -2,7 +2,7 @@
 using AppDomain.Enums;
 using Application.Common.Mappings;
 
-namespace Application.Tasks.Queries.GetTasksQuery
+namespace Application.Tasks.Queries.GetTasks
 {
     public class TaskDto : IMapFrom<ToDoTask>
     {

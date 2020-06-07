@@ -19,6 +19,10 @@ namespace Application.Tasks.Commands.CreateTask
         public TaskPriority Priority { get; set; }
 
         public int? AssignedPersonId { get; set; }
+
+        public void Mapping(Profile profile) =>
+            profile.CreateMap<CreateTaskCommand, ToDoTask>()
+                .ForMember(d => d.AssignedPersonId, o => o.Ignore());
     }
 
     public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, int>

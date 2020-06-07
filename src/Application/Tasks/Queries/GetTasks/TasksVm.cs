@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using AppDomain.Enums;
 
-namespace Application.Tasks.Queries.GetTasksQuery
+namespace Application.Tasks.Queries.GetTasks
 {
     public class TasksVm
     {

@@ -8,6 +8,8 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<ToDoTask> builder)
         {
+            builder.ToTable("Tasks");
+
             builder.Property(t => t.Name)
                 .IsRequired()
                 .HasMaxLength(100);

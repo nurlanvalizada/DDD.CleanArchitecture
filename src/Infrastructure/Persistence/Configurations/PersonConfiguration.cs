@@ -8,9 +8,13 @@ namespace Infrastructure.Persistence.Configurations
     {
         public void Configure(EntityTypeBuilder<Person> builder)
         {
+            builder.ToTable("Persons");
+
             builder.Property(t => t.Name)
                 .HasMaxLength(20)
                 .IsRequired();
+
+            builder.OwnsOne(o => o.Address);
         }
     }
 }

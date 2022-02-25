@@ -1,6 +1,6 @@
 using Xunit;
 
-namespace Web.IntegratationTests
+namespace Web.IntegrationTests
 {
     public class UnitTest1
     {

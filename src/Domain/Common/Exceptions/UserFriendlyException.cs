@@ -8,7 +8,7 @@ namespace AppDomain.Common.Exceptions
         {
             
         } 
-        public UserFriendlyException(string errorMessage, Exception exc) : base($"The following error occured \"{errorMessage}\"", exc)
+        public UserFriendlyException(string errorMessage, Exception exc) : base($"The following error occurred \"{errorMessage}\"", exc)
         {
             
         }

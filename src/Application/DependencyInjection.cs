@@ -1,7 +1,6 @@
 ﻿using System.Reflection;
 using AppDomain.Common.Interfaces;
 using Application.Common.Behaviors;
-using AutoMapper;
 using MediatR;
 using Microsoft.Extensions.DependencyInjection;
 

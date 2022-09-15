@@ -1,7 +1,7 @@
 using AppDomain;
 using Application;
-using Application.Common.Exceptions;
 using Application.Common.Interfaces;
+using FluentValidation;
 using FluentValidation.AspNetCore;
 using Infrastructure;
 using Microsoft.AspNetCore.Builder;
@@ -34,15 +34,19 @@ namespace Web
             services.AddApplication();
             services.AddInfrastructure(Configuration);
 
+            services.AddDatabaseDeveloperPageExceptionFilter();
+            
             services.AddScoped<ICurrentUserService, CurrentUserService>();
 
             services.AddHttpContextAccessor();
 
             services.AddHealthChecks();
 
-            services.AddControllers()
-                .AddFluentValidation(fv => fv.RegisterValidatorsFromAssemblyContaining(typeof(ValidationException)))
-                .AddNewtonsoftJson();
+            services.AddControllers().AddNewtonsoftJson();
+
+            services.AddFluentValidationAutoValidation();
+            services.AddFluentValidationClientsideAdapters();
+            services.AddValidatorsFromAssembly(typeof(Application.Common.Exceptions.ValidationException).Assembly);
 
             // Customise default API behaviour
             services.Configure<ApiBehaviorOptions>(options =>
@@ -63,7 +67,7 @@ namespace Web
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
-                app.UseDatabaseErrorPage();
+                app.UseMigrationsEndPoint();
             }
             else
             {

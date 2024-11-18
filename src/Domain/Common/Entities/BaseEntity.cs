@@ -1,9 +1,8 @@
 ﻿using AppDomain.Common.DomainEvents;
 
-namespace AppDomain.Common.Entities
+namespace AppDomain.Common.Entities;
+
+public abstract class BaseEntity<T> : HaveDomainEvents, IEntity
 {
-    public abstract class BaseEntity<T> : HaveDomainEvents, IEntity
-    {
-        public T Id { get; set; }
-    }
+    public T Id { get; init; }
 }

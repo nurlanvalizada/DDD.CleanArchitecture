@@ -4,27 +4,26 @@ using Application.Common.Behaviors;
 using FluentValidation;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace Application
+namespace Application;
+
+public static class DependencyInjection
 {
-    public static class DependencyInjection
+    public static IServiceCollection AddApplication(this IServiceCollection services)
     {
-        public static IServiceCollection AddApplication(this IServiceCollection services)
+        services.AddAutoMapper(Assembly.GetExecutingAssembly());
+        services.AddMediatR(configuration =>
         {
-            services.AddAutoMapper(Assembly.GetExecutingAssembly());
-            services.AddMediatR(configuration =>
-            {
-                configuration.RegisterServicesFromAssemblies(typeof(DependencyInjection).Assembly, typeof(IRepository<,>).Assembly);
+            configuration.RegisterServicesFromAssemblies(typeof(DependencyInjection).Assembly, typeof(IRepository<,>).Assembly);
 
-                configuration.AddOpenBehavior(typeof(RequestPerformanceBehaviour<,>));
+            configuration.AddOpenBehavior(typeof(RequestPerformanceBehaviour<,>));
 
-                configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));
+            configuration.AddOpenBehavior(typeof(RequestValidationBehavior<,>));
 
-                configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
-            });
+            configuration.AddOpenBehavior(typeof(ValidationBehavior<,>));
+        });
             
-            services.AddValidatorsFromAssembly(typeof(Application.Common.Exceptions.ValidationException).Assembly);
+        services.AddValidatorsFromAssembly(typeof(Application.Common.Exceptions.ValidationException).Assembly);
 
-            return services;
-        }
+        return services;
     }
 }

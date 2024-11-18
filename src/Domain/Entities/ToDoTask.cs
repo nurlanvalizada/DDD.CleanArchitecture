@@ -3,48 +3,67 @@ using AppDomain.Common.Entities;
 using AppDomain.Enums;
 using AppDomain.Events;
 
-namespace AppDomain.Entities
+namespace AppDomain.Entities;
+
+public class ToDoTask : BaseEntity<Guid>, ICreationAudited, IModificationAudited, IDeletionAudited, ISoftDelete
 {
-    public class ToDoTask : BaseEntity<int>, ICreationAudited, IModificationAudited, IDeletionAudited, ISoftDelete
+    private ToDoTask()
     {
-        public string Name { get; set; }
+    }
+    
+    private ToDoTask(Guid id, string name, TaskPriority priority, TaskState state, Person assignedPerson)
+    {
+        Id = id;
+        Name = name;
+        Priority = priority;
+        State = state;
+        AssignedPerson = assignedPerson;
+        AssignedPersonId = assignedPerson.Id;
+        CreatedDate = DateTime.Now;
+    }
+    
+    public string Name { get; private set; }
 
-        public bool IsCompleted { get;  private set; }
+    public bool IsCompleted { get;  private set; }
 
-        public TaskPriority Priority { get; set; } = TaskPriority.Medium;
+    public TaskPriority Priority { get; private set; } = TaskPriority.Medium;
 
-        public TaskState State { get; set; } = TaskState.Active;
-
-
-        public DateTime CreatedDate { get; set; }
-
-        public long? CreatedUserId { get; set; }
+    public TaskState State { get; private set; } = TaskState.Active;
 
 
-        public DateTime? LastModifiedDate { get; set; }
+    public DateTime CreatedDate { get; set; }
 
-        public long? LastModifiedUserId { get; set; }
+    public long? CreatedUserId { get; set; }
 
 
-        public bool IsDeleted { get; set; }
+    public DateTime? LastModifiedDate { get; set; }
 
-        public DateTime? DeletedDate { get; set; }
+    public long? LastModifiedUserId { get; set; }
 
-        public long? DeletedUserId { get; set; }
 
-        public void MarkComplete()
-        {
-            IsCompleted = true;
-            Events.Add(new TaskCompletedEvent(this));
-        }
+    public bool IsDeleted { get; set; }
 
-        public void MarkUnComplete()
-        {
-            IsCompleted = false;
-        }
+    public DateTime? DeletedDate { get; set; }
 
-        //navigation properties
-        public int AssignedPersonId { get; set; }
-        public Person Person { get; set; }
+    public long? DeletedUserId { get; set; }
+
+    public void MarkComplete()
+    {
+        IsCompleted = true;
+        AddDomainEvent(new TaskCompletedEvent(this));
+    }
+
+    public void MarkUnComplete()
+    {
+        IsCompleted = false;
+    }
+
+    //navigation properties
+    public Guid AssignedPersonId { get; set; }
+    public Person AssignedPerson { get; set; }
+    
+    public static ToDoTask Create(Guid id, string name, TaskPriority priority, TaskState state, Person assignedPerson)
+    {
+        return new ToDoTask(id, name, priority, state, assignedPerson);
     }
 }

@@ -39,7 +39,7 @@ public class CustomWebApplicationFactory<TStartup> : WebApplicationFactory<Progr
             try
             {
                 // Seed the database with some specific test data.
-                SeedData.PopulateTestData(appDb);
+                SeedData.PopulateTestData(appDb).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {

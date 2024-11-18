@@ -4,19 +4,18 @@ using System.Threading.Tasks;
 using AppDomain.Events;
 using MediatR;
 
-namespace AppDomain.Handlers
-{
-    public class TaskCompletedEmailNotificationHandler : INotificationHandler<TaskCompletedEvent>
-    {
-        public Task Handle(TaskCompletedEvent notification, CancellationToken cancellationToken)
-        {
-            if (notification == null)
-            {
-                throw new ArgumentNullException(nameof(notification));
-            }
+namespace AppDomain.Handlers;
 
-            // Do Nothing
-            return Task.CompletedTask;
+public class TaskCompletedEmailNotificationHandler : INotificationHandler<TaskCompletedEvent>
+{
+    public Task Handle(TaskCompletedEvent notification, CancellationToken cancellationToken)
+    {
+        if (notification == null)
+        {
+            throw new ArgumentNullException(nameof(notification));
         }
+
+        // Do Nothing
+        return Task.CompletedTask;
     }
 }

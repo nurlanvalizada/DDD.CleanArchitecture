@@ -1,7 +1,6 @@
-﻿namespace Application.Common.Interfaces
+﻿namespace Application.Common.Interfaces;
+
+public interface ICurrentUserService
 {
-    public interface ICurrentUserService
-    {
-        long? UserId { get; }
-    }
+    long? UserId { get; }
 }

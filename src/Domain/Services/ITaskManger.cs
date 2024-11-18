@@ -1,10 +1,9 @@
 ﻿using System.Threading.Tasks;
 using AppDomain.Entities;
 
-namespace AppDomain.Services
+namespace AppDomain.Services;
+
+public interface ITaskManger
 {
-    public interface ITaskManger
-    {
-        Task AssignTaskToPerson(ToDoTask task, Person person);
-    }
+    Task AssignTaskToPerson(ToDoTask task, Person person);
 }

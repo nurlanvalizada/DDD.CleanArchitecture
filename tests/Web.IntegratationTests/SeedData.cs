@@ -1,4 +1,8 @@
+using System;
+using System.Security.Cryptography.X509Certificates;
+using System.Threading.Tasks;
 using AppDomain.Entities;
+using AppDomain.Enums;
 using AppDomain.ValueObjects;
 using Infrastructure.Persistence;
 
@@ -6,40 +10,20 @@ namespace IntegrationTests;
 
 public class SeedData
 {
-    public static void PopulateTestData(ApplicationDbContext dbContext)
+    public static Guid PersonId1 = Guid.NewGuid();
+    public static Guid PersonId2 = Guid.NewGuid();
+    
+    public static async Task PopulateTestData(ApplicationDbContext dbContext)
     {
-        dbContext.Persons.Add(new Person
-        {
-            Id = 1,
-            Name = "Mahmud",
-            Surname = "Sofiyev",
-            Age = 26,
-            Address = new Address("street", "city", "state", "country", "zipcode")
-        });
+        var person1 = Person.Create(PersonId1, "Nurlan", "Valizada", 32, new Address("street", "city", "state", "country", "zipcode"));
+        var person2 = Person.Create(PersonId2, "Namiq", "Valiyev", 26, new Address("street", "city", "state", "country", "zipcode"));
+        
+        dbContext.Persons.Add(person1);
+        dbContext.Persons.Add(person2);
 
-        dbContext.Persons.Add(new Person
-        {
-            Id = 2,
-            Name = "Mahmud1",
-            Surname = "Sofiyev1",
-            Age = 26,
-            Address = new Address("street", "city", "state", "country", "zipcode")
-        });
-
-        dbContext.ToDoTasks.Add(new ToDoTask
-        {
-            Id = 1,
-            Name = "Test1",
-            AssignedPersonId = 1,
-        });
-
-
-        dbContext.ToDoTasks.Add(new ToDoTask
-        {
-            Id = 2,
-            Name = "Test2",
-            AssignedPersonId = 2,
-        });
-        dbContext.SaveChanges();
+        dbContext.ToDoTasks.Add(ToDoTask.Create(Guid.NewGuid(), "Task1", TaskPriority.Medium, TaskState.Active, person1));
+        dbContext.ToDoTasks.Add(ToDoTask.Create(Guid.NewGuid(), "Task2", TaskPriority.Medium, TaskState.Active, person2));
+        
+        await dbContext.SaveChangesAsync();
     }
 }

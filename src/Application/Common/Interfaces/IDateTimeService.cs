@@ -1,10 +1,9 @@
 ﻿using System;
 
-namespace Application.Common.Interfaces
+namespace Application.Common.Interfaces;
+
+public interface IDateTimeService
 {
-    public interface IDateTimeService
-    {
-        DateTime Now();
-        DateTime UtcNow();
-    }
+    DateTime Now();
+    DateTime UtcNow();
 }

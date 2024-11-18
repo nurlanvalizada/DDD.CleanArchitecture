@@ -6,56 +6,55 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Newtonsoft.Json;
 
-namespace Web.Common
+namespace Web.Common;
+
+public class CustomExceptionHandlerMiddleware(RequestDelegate next)
 {
-    public class CustomExceptionHandlerMiddleware(RequestDelegate next)
+    public async Task Invoke(HttpContext context)
     {
-        public async Task Invoke(HttpContext context)
+        try
         {
-            try
-            {
-                await next(context);
-            }
-            catch (Exception ex)
-            {
-                await HandleExceptionAsync(context, ex);
-            }
+            await next(context);
         }
-
-        private Task HandleExceptionAsync(HttpContext context, Exception exception)
+        catch (Exception ex)
         {
-            var code = HttpStatusCode.InternalServerError;
-
-            var result = string.Empty;
-
-            switch (exception)
-            {
-                case ValidationException validationException:
-                    code = HttpStatusCode.BadRequest;
-                    result = JsonConvert.SerializeObject(validationException.Failures);
-                    break;
-                case NotFoundException _:
-                    code = HttpStatusCode.NotFound;
-                    break;
-            }
-
-            context.Response.ContentType = "application/json";
-            context.Response.StatusCode = (int)code;
-
-            if (string.IsNullOrEmpty(result))
-            {
-                result = JsonConvert.SerializeObject(new { error = exception.Message });
-            }
-
-            return context.Response.WriteAsync(result);
+            await HandleExceptionAsync(context, ex);
         }
     }
 
-    public static class CustomExceptionHandlerMiddlewareExtensions
+    private Task HandleExceptionAsync(HttpContext context, Exception exception)
     {
-        public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
+        var code = HttpStatusCode.InternalServerError;
+
+        var result = string.Empty;
+
+        switch (exception)
         {
-            return builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
+            case ValidationException validationException:
+                code = HttpStatusCode.BadRequest;
+                result = JsonConvert.SerializeObject(validationException.Failures);
+                break;
+            case NotFoundException _:
+                code = HttpStatusCode.NotFound;
+                break;
         }
+
+        context.Response.ContentType = "application/json";
+        context.Response.StatusCode = (int)code;
+
+        if (string.IsNullOrEmpty(result))
+        {
+            result = JsonConvert.SerializeObject(new { error = exception.Message });
+        }
+
+        return context.Response.WriteAsync(result);
+    }
+}
+
+public static class CustomExceptionHandlerMiddlewareExtensions
+{
+    public static IApplicationBuilder UseCustomExceptionHandler(this IApplicationBuilder builder)
+    {
+        return builder.UseMiddleware<CustomExceptionHandlerMiddleware>();
     }
 }

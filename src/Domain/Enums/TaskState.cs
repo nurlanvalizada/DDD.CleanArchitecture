@@ -1,9 +1,8 @@
-﻿namespace AppDomain.Enums
+﻿namespace AppDomain.Enums;
+
+public enum TaskState : byte
 {
-    public enum TaskState : byte
-    {
-        Active,
-        Passive,
-        Paused
-    }
+    Active,
+    Passive,
+    Paused
 }

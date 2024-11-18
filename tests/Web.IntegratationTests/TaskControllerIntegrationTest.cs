@@ -1,3 +1,4 @@
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Text;
@@ -27,7 +28,7 @@ public class TaskControllerIntegrationTest(CustomWebApplicationFactory<Program> 
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
 
-        SeedData.PopulateTestData(context);
+        await SeedData.PopulateTestData(context);
     }
 
     public Task DisposeAsync()
@@ -61,7 +62,7 @@ public class TaskControllerIntegrationTest(CustomWebApplicationFactory<Program> 
             Name = "New Task",
             State = TaskState.Active,
             Priority = TaskPriority.High,
-            AssignedPersonId = 1 
+            AssignedPersonId = SeedData.PersonId1
         };
 
         var expectedTaskId = 3;
@@ -86,13 +87,11 @@ public class TaskControllerIntegrationTest(CustomWebApplicationFactory<Program> 
         response.EnsureSuccessStatusCode();
         Assert.Equal(HttpStatusCode.NoContent, response.StatusCode);
 
-        using (var scope = factory.Services.CreateScope())
-        {
-            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-            var repository = new EfRepository<ToDoTask, int>(dbContext);
-            var deletedTask = await repository.GetFirst(2);
-            Assert.Null(deletedTask);
-        }
+        using var scope = factory.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+        var repository = new EfRepository<ToDoTask, Guid>(dbContext);
+        var deletedTask = await repository.GetFirst(SeedData.PersonId2);
+        Assert.Null(deletedTask);
     }
 
     [Fact]
@@ -100,7 +99,7 @@ public class TaskControllerIntegrationTest(CustomWebApplicationFactory<Program> 
     {
         var updateCommand = new UpdateTaskCommand
         {
-            Id = 1,
+            Id = SeedData.PersonId1,
             Name = "UpdatedTask"
         };
         var jsonContent = new StringContent(JsonConvert.SerializeObject(updateCommand), Encoding.UTF8, "application/json");

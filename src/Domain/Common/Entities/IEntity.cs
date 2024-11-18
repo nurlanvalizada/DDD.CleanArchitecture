@@ -1,6 +1,3 @@
-﻿namespace AppDomain.Common.Entities
-{
-    public interface IEntity
-    {
-    }
-}
+﻿namespace AppDomain.Common.Entities;
+
+public interface IEntity;

@@ -2,16 +2,15 @@
 using AppDomain.Enums;
 using Application.Common.Mappings;
 
-namespace Application.Tasks.Queries.GetTasks
+namespace Application.Tasks.Queries.GetTasks;
+
+public class TaskDto : IMapFrom<ToDoTask>
 {
-    public class TaskDto : IMapFrom<ToDoTask>
-    {
-        public int Id { get; set; }
+    public int Id { get; set; }
 
-        public string Name { get; set; }
+    public string Name { get; set; }
 
-        public TaskPriority Priority { get; set; }
+    public TaskPriority Priority { get; set; }
 
-        public TaskState State { get; set; }
-    }
+    public TaskState State { get; set; }
 }

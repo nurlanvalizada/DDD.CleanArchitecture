@@ -1,10 +1,9 @@
 ﻿using AppDomain.Common.DomainEvents;
 using AppDomain.Entities;
 
-namespace AppDomain.Events
+namespace AppDomain.Events;
+
+public class TaskCompletedEvent(ToDoTask completedTask) : BaseDomainEvent
 {
-    public class TaskCompletedEvent(ToDoTask completedTask) : BaseDomainEvent
-    {
-        public ToDoTask CompletedTask { get; set; } = completedTask;
-    }
+    public ToDoTask CompletedTask { get; set; } = completedTask;
 }

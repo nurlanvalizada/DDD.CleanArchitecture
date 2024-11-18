@@ -1,7 +1,6 @@
-﻿namespace AppDomain.Common.Entities
+﻿namespace AppDomain.Common.Entities;
+
+public interface ISoftDelete
 {
-    public interface ISoftDelete
-    {
-        bool IsDeleted { get; set; }
-    }
+    bool IsDeleted { get; set; }
 }

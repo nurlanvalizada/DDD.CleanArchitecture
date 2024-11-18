@@ -2,20 +2,19 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 
-namespace Infrastructure.Persistence.Configurations
+namespace Infrastructure.Persistence.Configurations;
+
+public class TodoTaskConfiguration : IEntityTypeConfiguration<ToDoTask>
 {
-    public class TodoTaskConfiguration : IEntityTypeConfiguration<ToDoTask>
+    public void Configure(EntityTypeBuilder<ToDoTask> builder)
     {
-        public void Configure(EntityTypeBuilder<ToDoTask> builder)
-        {
-            builder.ToTable("Tasks");
+        builder.ToTable("Tasks");
 
-            builder.HasOne(t => t.Person).WithMany(p => p.Tasks)
-                .HasForeignKey(t => t.AssignedPersonId);
+        builder.HasOne(t => t.AssignedPerson).WithMany(p => p.Tasks)
+               .HasForeignKey(t => t.AssignedPersonId);
 
-            builder.Property(t => t.Name)
-                .IsRequired()
-                .HasMaxLength(100);
-        }
+        builder.Property(t => t.Name)
+               .IsRequired()
+               .HasMaxLength(100);
     }
 }

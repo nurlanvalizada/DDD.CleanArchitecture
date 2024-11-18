@@ -1,10 +1,9 @@
-﻿namespace AppDomain.Enums
+﻿namespace AppDomain.Enums;
+
+public enum TaskPriority : byte
 {
-    public enum TaskPriority : byte
-    {
-        None,
-        Low,
-        Medium,
-        High
-    }
+    None,
+    Low,
+    Medium,
+    High
 }

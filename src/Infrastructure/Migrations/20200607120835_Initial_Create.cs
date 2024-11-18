@@ -11,8 +11,7 @@ namespace Infrastructure.Migrations
                 name: "Persons",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Id = table.Column<int>(nullable: false).Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(maxLength: 20, nullable: false),
                     Surname = table.Column<string>(nullable: true),
                     Age = table.Column<short>(nullable: false),

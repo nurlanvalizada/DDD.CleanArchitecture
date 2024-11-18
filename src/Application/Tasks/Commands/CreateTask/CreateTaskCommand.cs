@@ -25,34 +25,22 @@ namespace Application.Tasks.Commands.CreateTask
                 .ForMember(d => d.AssignedPersonId, o => o.Ignore());
     }
 
-    public class CreateTaskCommandHandler : IRequestHandler<CreateTaskCommand, int>
+    public class CreateTaskCommandHandler(IRepository<ToDoTask, int> taskRepository, IRepository<Person, int> personRepository, ITaskManger taskManager, IMapper mapper)
+        : IRequestHandler<CreateTaskCommand, int>
     {
-        private readonly IRepository<ToDoTask, int> _taskRepository;
-        private readonly IRepository<Person, int> _personRepository;
-        private readonly ITaskManger _taskManager;
-        private readonly IMapper _mapper;
-
-        public CreateTaskCommandHandler(IRepository<ToDoTask, int> taskRepository, IRepository<Person, int> personRepository, ITaskManger taskManager, IMapper mapper)
-        {
-            _taskRepository = taskRepository;
-            _personRepository = personRepository;
-            _taskManager = taskManager;
-            _mapper = mapper;
-        }
-
         public async Task<int> Handle(CreateTaskCommand request, CancellationToken cancellationToken)
         {
-            var task = _mapper.Map<ToDoTask>(request);
+            var task = mapper.Map<ToDoTask>(request);
 
             if (request.AssignedPersonId != null)
             {
-                var person = await _personRepository.GetFirst(request.AssignedPersonId.Value);
-                await _taskManager.AssignTaskToPerson(task, person);
+                var person = await personRepository.GetFirst(request.AssignedPersonId.Value);
+                await taskManager.AssignTaskToPerson(task, person);
             }
 
-            await _taskRepository.Add(task);
+            await taskRepository.Add(task);
 
-            await _taskRepository.Commit(cancellationToken);
+            await taskRepository.Commit(cancellationToken);
 
             return task.Id;
         }

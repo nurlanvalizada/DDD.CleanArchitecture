@@ -7,16 +7,9 @@ using AppDomain.Enums;
 
 namespace AppDomain.Services
 {
-    public class TaskManager : ITaskManger
+    public class TaskManager(IRepository<ToDoTask, int> taskRepository) : ITaskManger
     {
         public const int MaxActiveTaskCountForAPerson = 3;
-
-        private readonly IRepository<ToDoTask, int> _taskRepository;
-
-        public TaskManager(IRepository<ToDoTask, int> taskRepository)
-        {
-            _taskRepository = taskRepository;
-        }
 
         public async Task AssignTaskToPerson(ToDoTask task, Person person)
         {
@@ -40,7 +33,7 @@ namespace AppDomain.Services
 
         private async Task<bool> HasPersonMaximumAssignedTask(Person person)
         {
-            var assignedTaskCount = await _taskRepository.Count(t => t.State == TaskState.Active && t.AssignedPersonId == person.Id);
+            var assignedTaskCount = await taskRepository.Count(t => t.State == TaskState.Active && t.AssignedPersonId == person.Id);
             return assignedTaskCount >= MaxActiveTaskCountForAPerson;
         }
     }

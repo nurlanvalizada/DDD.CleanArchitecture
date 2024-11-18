@@ -1,38 +1,59 @@
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Configuration;
+
+using AppDomain;
+using Application;
+using FluentValidation;
+using FluentValidation.AspNetCore;
+using Infrastructure;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
+using Scalar.AspNetCore;
 using Serilog;
+using Web;
+using Web.Common;
 
-namespace Web
+WebApplicationBuilder builder = WebApplication.CreateBuilder(args);
+
+builder.Host.UseSerilog((context, loggerConfig) =>
+    loggerConfig.ReadFrom.Configuration(context.Configuration));
+
+builder.Services.AddControllers().AddNewtonsoftJson();
+builder.Services.AddEndpointsApiExplorer();
+
+builder.Services.AddDomain();
+builder.Services.AddApplication();
+builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddWebApi(builder.Configuration);
+
+builder.Services.AddOpenApi();
+builder.Services.AddHttpContextAccessor();
+
+WebApplication app = builder.Build();
+
+if (app.Environment.IsDevelopment())
 {
-    public class Program
-    {
-        public static void Main(string[] args)
-        {
-            CreateHostBuilder(args).Build().Run();
-        }
-
-        private static IHostBuilder CreateHostBuilder(string[] args) =>
-            Host.CreateDefaultBuilder(args)
-                .ConfigureWebHostDefaults(webBuilder =>
-                {
-                    webBuilder.UseStartup<Startup>();
-                    webBuilder.ConfigureAppConfiguration(SetupConfiguration);
-                    webBuilder.ConfigureLogging(SetupLogging);
-                });
-
-        private static void SetupConfiguration(WebHostBuilderContext hostingContext, IConfigurationBuilder configBuilder)
-        {
-            var configuration = configBuilder.Build();
-            Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(configuration)
-                .CreateLogger();
-        }
-
-        private static void SetupLogging(WebHostBuilderContext hostingContext, ILoggingBuilder loggingBuilder)
-        {
-            loggingBuilder.AddSerilog();
-        }
-    }
+    app.MapOpenApi();
+    app.MapScalarApiReference();
+    app.UseDeveloperExceptionPage();
+    app.UseMigrationsEndPoint(); 
 }
+else
+{
+    app.UseHsts();
+}
+
+app.UseHttpsRedirection();
+
+app.UseSerilogRequestLogging();
+
+app.UseCustomExceptionHandler();
+
+app.UseAuthentication();
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();
+
+public partial class Program;

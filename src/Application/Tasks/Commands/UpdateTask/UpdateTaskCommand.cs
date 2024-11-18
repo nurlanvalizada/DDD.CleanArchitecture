@@ -21,37 +21,25 @@ namespace Application.Tasks.Commands.UpdateTask
         public bool IsComplete { get; set; }
     }
 
-    public class UpdateTaskCommandHandler : IRequestHandler<UpdateTaskCommand>
+    public class UpdateTaskCommandHandler(IRepository<ToDoTask, int> taskRepository, IMapper mapper) : IRequestHandler<UpdateTaskCommand>
     {
-        private readonly IRepository<ToDoTask, int> _taskRepository;
-        private readonly IMapper _mapper;
-
-        public UpdateTaskCommandHandler(IRepository<ToDoTask, int> taskRepository, IMapper mapper)
+        public async Task Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
         {
-            _taskRepository = taskRepository;
-            _mapper = mapper;
-        }
-
-        public async Task<Unit> Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
-        {
-            var task = await _taskRepository.GetFirst(request.Id);
+            var task = await taskRepository.GetFirst(request.Id);
 
             if (task == null)
             {
                 throw new NotFoundException(nameof(ToDoTask), request.Id);
             }
 
-            _mapper.Map(request, task);
-
+            mapper.Map(request, task);
 
             if (request.IsComplete)
                 task.MarkComplete();
             else
                 task.MarkUnComplete();
 
-            await _taskRepository.Commit(cancellationToken);
-
-            return Unit.Value;
+            await taskRepository.Commit(cancellationToken);
         }
     }
 }

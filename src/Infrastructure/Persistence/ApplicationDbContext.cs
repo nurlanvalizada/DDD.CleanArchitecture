@@ -15,19 +15,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Infrastructure.Persistence
 {
-    public class ApplicationDbContext : DbContext
+    public class ApplicationDbContext(DbContextOptions options, ICurrentUserService currentUserService, IMediator mediator) : DbContext(options)
     {
         private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(ApplicationDbContext)
                                                                                  .GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.Instance | BindingFlags.NonPublic);
-
-        private readonly ICurrentUserService _currentUserService;
-        private readonly IMediator _mediator;
-
-        public ApplicationDbContext(DbContextOptions options, ICurrentUserService currentUserService, IMediator mediator) : base(options)
-        {
-            _currentUserService = currentUserService;
-            _mediator = mediator;
-        }
 
         public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new CancellationToken())
         {
@@ -51,7 +42,7 @@ namespace Infrastructure.Persistence
             int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
             // ignore events if no dispatcher provided
-            if (_mediator == null) return result;
+            if (mediator == null) return result;
 
             // dispatch events only if save was successful
             var entitiesWithEvents = ChangeTracker.Entries<HaveDomainEvents>()
@@ -65,7 +56,7 @@ namespace Infrastructure.Persistence
                 entity.Events.Clear();
                 foreach (var domainEvent in events)
                 {
-                    await _mediator.Publish(domainEvent, cancellationToken).ConfigureAwait(false);
+                    await mediator.Publish(domainEvent, cancellationToken).ConfigureAwait(false);
                 }
             }
 
@@ -148,7 +139,7 @@ namespace Infrastructure.Persistence
                 return;
             }
 
-            creationAuditedEntity.CreatedUserId = _currentUserService.UserId;
+            creationAuditedEntity.CreatedUserId = currentUserService.UserId;
         }
 
         protected virtual void SetModificationAuditProperties(EntityEntry entry)
@@ -168,7 +159,7 @@ namespace Infrastructure.Persistence
                 return;
             }
 
-            modificationAuditedEntity.LastModifiedUserId = _currentUserService.UserId;
+            modificationAuditedEntity.LastModifiedUserId = currentUserService.UserId;
         }
 
         protected virtual void SetDeletionAuditProperties(EntityEntry entry)
@@ -183,7 +174,7 @@ namespace Infrastructure.Persistence
 
             if (!(entry.Entity is IDeletionAudited deletionAuditedEntity)) return;
 
-            deletionAuditedEntity.DeletedUserId = _currentUserService.UserId;
+            deletionAuditedEntity.DeletedUserId = currentUserService.UserId;
             deletionAuditedEntity.DeletedDate = DateTime.Now;
         }
 

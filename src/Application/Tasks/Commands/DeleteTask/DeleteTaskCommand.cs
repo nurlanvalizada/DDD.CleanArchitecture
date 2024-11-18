@@ -12,29 +12,20 @@ namespace Application.Tasks.Commands.DeleteTask
         public int Id { get; set; }
     }
 
-    public class DeleteTaskCommandHandler : IRequestHandler<DeleteTaskCommand>
+    public class DeleteTaskCommandHandler(IRepository<ToDoTask, int> taskRepository) : IRequestHandler<DeleteTaskCommand>
     {
-        private readonly IRepository<ToDoTask, int> _taskRepository;
-
-        public DeleteTaskCommandHandler(IRepository<ToDoTask, int> taskRepository)
+        public async Task Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
         {
-            _taskRepository = taskRepository;
-        }
-
-        public async Task<Unit> Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
-        {
-            var entity = await _taskRepository.GetFirst(request.Id);
+            var entity = await taskRepository.GetFirst(request.Id);
 
             if (entity == null)
             {
                 throw new NotFoundException(nameof(ToDoTask), request.Id);
             }
 
-            await _taskRepository.Delete(entity);
+            await taskRepository.Delete(entity);
 
-            await _taskRepository.Commit(cancellationToken);
-
-            return Unit.Value;
+            await taskRepository.Commit(cancellationToken);
         }
     }
 }

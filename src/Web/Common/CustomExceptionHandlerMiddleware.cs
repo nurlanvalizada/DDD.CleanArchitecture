@@ -8,20 +8,13 @@ using Newtonsoft.Json;
 
 namespace Web.Common
 {
-    public class CustomExceptionHandlerMiddleware
+    public class CustomExceptionHandlerMiddleware(RequestDelegate next)
     {
-        private readonly RequestDelegate _next;
-
-        public CustomExceptionHandlerMiddleware(RequestDelegate next)
-        {
-            _next = next;
-        }
-
         public async Task Invoke(HttpContext context)
         {
             try
             {
-                await _next(context);
+                await next(context);
             }
             catch (Exception ex)
             {

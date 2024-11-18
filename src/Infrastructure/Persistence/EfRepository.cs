@@ -10,15 +10,10 @@ using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.Persistence
 {
-    public class EfRepository<TEntity, TPrimaryKey> : IRepository<TEntity, TPrimaryKey> where TEntity : BaseEntity<TPrimaryKey>
+    public class EfRepository<TEntity, TPrimaryKey>(ApplicationDbContext dbContext) : IRepository<TEntity, TPrimaryKey>
+        where TEntity : BaseEntity<TPrimaryKey>
     {
-        private readonly ApplicationDbContext _dbContext;
-        private DbSet<TEntity> Table => _dbContext.Set<TEntity>();
-
-        public EfRepository(ApplicationDbContext dbContext)
-        {
-            _dbContext = dbContext;
-        }
+        private DbSet<TEntity> Table => dbContext.Set<TEntity>();
 
         public IQueryable<TEntity> GetAll()
         {
@@ -138,12 +133,12 @@ namespace Infrastructure.Persistence
 
         public async Task Update(TEntity entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Modified;
+            dbContext.Entry(entity).State = EntityState.Modified;
         }
 
         public async Task Delete(TEntity entity)
         {
-            _dbContext.Entry(entity).State = EntityState.Deleted;
+            dbContext.Entry(entity).State = EntityState.Deleted;
         }
 
         public async Task DeleteWhere(Expression<Func<TEntity, bool>> predicate)
@@ -152,7 +147,7 @@ namespace Infrastructure.Persistence
 
             foreach (var entity in entities)
             {
-                _dbContext.Entry(entity).State = EntityState.Deleted;
+                dbContext.Entry(entity).State = EntityState.Deleted;
             }
         }
 
@@ -175,12 +170,12 @@ namespace Infrastructure.Persistence
 
         public async Task Commit(CancellationToken cancellationToken = new CancellationToken())
         {
-            await _dbContext.SaveChangesAsync(cancellationToken);
+            await dbContext.SaveChangesAsync(cancellationToken);
         }
 
         public void Dispose()
         {
-            _dbContext?.Dispose();
+            dbContext?.Dispose();
         }
     }
 }

@@ -15,23 +15,14 @@ namespace Application.Tasks.Queries.GetTasks
         public string Name { get; set; }
     }
 
-    public class GetTasksQueryHandler : IRequestHandler<GetTasksQuery, TasksVm>
+    public class GetTasksQueryHandler(IMapper mapper, IRepository<ToDoTask, int> taskRepository) : IRequestHandler<GetTasksQuery, TasksVm>
     {
-        private readonly IRepository<ToDoTask, int> _taskRepository;
-        private readonly IMapper _mapper;
-
-        public GetTasksQueryHandler(IMapper mapper, IRepository<ToDoTask, int> taskRepository)
-        {
-            _mapper = mapper;
-            _taskRepository = taskRepository;
-        }
-
         public async Task<TasksVm> Handle(GetTasksQuery request, CancellationToken cancellationToken)
         {
             var vm = new TasksVm
             {
-                Tasks = await _taskRepository.GetAll().Where(t=>t.Name.Contains(request.Name))
-                    .ProjectTo<TaskDto>(_mapper.ConfigurationProvider)
+                Tasks = await taskRepository.GetAll().Where(t=>t.Name.Contains(request.Name))
+                    .ProjectTo<TaskDto>(mapper.ConfigurationProvider)
                     .OrderBy(t => t.Name)
                     .ToListAsync(cancellationToken)
             };

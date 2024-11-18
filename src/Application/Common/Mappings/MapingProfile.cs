@@ -30,7 +30,7 @@ namespace Application.Common.Mappings
                                      ? type.GetInterface("IMapFrom`1").GetMethod("Mapping")
                                      : type.GetInterface("IMapTo`1").GetMethod("Mapping"));
 
-                methodInfo?.Invoke(instance, new object[] { this });
+                methodInfo?.Invoke(instance, [this]);
             }
         }
     }

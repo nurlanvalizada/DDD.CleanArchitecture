@@ -3,13 +3,8 @@ using AppDomain.Entities;
 
 namespace AppDomain.Events
 {
-    public class TaskCompletedEvent : BaseDomainEvent
+    public class TaskCompletedEvent(ToDoTask completedTask) : BaseDomainEvent
     {
-        public ToDoTask CompletedTask { get; set; }
-
-        public TaskCompletedEvent(ToDoTask completedTask)
-        {
-            CompletedTask = completedTask;
-        }
+        public ToDoTask CompletedTask { get; set; } = completedTask;
     }
 }

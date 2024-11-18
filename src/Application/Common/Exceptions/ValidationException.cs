@@ -5,13 +5,8 @@ using FluentValidation.Results;
 
 namespace Application.Common.Exceptions
 {
-    public class ValidationException : Exception
+    public class ValidationException() : Exception("One or more validation failures have occurred.")
     {
-        public ValidationException() : base("One or more validation failures have occurred.")
-        {
-            Failures = new Dictionary<string, string[]>();
-        }
-
         public ValidationException(IEnumerable<ValidationFailure> failures) : this()
         {
             var failureGroups = failures
@@ -26,6 +21,6 @@ namespace Application.Common.Exceptions
             }
         }
 
-        public IDictionary<string, string[]> Failures { get; }
+        public IDictionary<string, string[]> Failures { get; } = new Dictionary<string, string[]>();
     }
 }

@@ -6,21 +6,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Application.Common.Behaviors
 {
-    public class RequestLogger<TRequest> : IRequestPreProcessor<TRequest>
+    public class RequestLogger<TRequest>(ILogger<TRequest> logger, ICurrentUserService currentUserService)
+        : IRequestPreProcessor<TRequest>
     {
-        private readonly ILogger _logger;
-        private readonly ICurrentUserService _currentUserService;
-
-        public RequestLogger(ILogger<TRequest> logger, ICurrentUserService currentUserService)
-        {
-            _logger = logger;
-            _currentUserService = currentUserService;
-        }
+        private readonly ILogger _logger = logger;
 
         public async Task Process(TRequest request, CancellationToken cancellationToken)
         {
             var requestName = typeof(TRequest).Name;
-            var userId = _currentUserService.UserId;
+            var userId = currentUserService.UserId;
 
             _logger.LogInformation("Request: {Name}, UserId: {@UserId}, {@Request}", requestName, userId, request);
 

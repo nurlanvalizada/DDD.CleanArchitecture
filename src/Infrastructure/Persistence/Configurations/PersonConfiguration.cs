@@ -14,6 +14,12 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
                .HasMaxLength(20)
                .IsRequired();
 
-        builder.OwnsOne(o => o.Address);
+        var addressOwned = builder.OwnsOne(o => o.Address);
+        
+        addressOwned.Property(x => x.Country).HasMaxLength(100);
+        addressOwned.Property(x => x.City).HasMaxLength(100);
+        addressOwned.Property(x => x.State).HasMaxLength(100);
+        addressOwned.Property(x => x.Street).HasMaxLength(200);
+        addressOwned.Property(x => x.ZipCode).HasMaxLength(20);
     }
 }

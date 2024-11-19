@@ -22,7 +22,7 @@ public class RepositoryIntegrationTests(CustomWebApplicationFactory<Program> fac
         await context.Database.EnsureCreatedAsync();
 
         // Seed the database with specific test data
-        await SeedData.PopulateTestData(context);
+        await SeedData.PopulateTestDataAsync(context);
     }
 
     public Task DisposeAsync()

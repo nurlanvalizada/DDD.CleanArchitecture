@@ -22,10 +22,12 @@ public class GetTasksQueryHandler(IMapper mapper, IRepository<ToDoTask, Guid> ta
     {
         var vm = new TasksVm
         {
-            Tasks = await taskRepository.GetAll().Where(t=>t.Name.Contains(request.Name))
+            Tasks = await taskRepository.GetAll().Where(t => string.IsNullOrWhiteSpace(request.Name) || t.Name.Contains(request.Name))
                                         .ProjectTo<TaskDto>(mapper.ConfigurationProvider)
                                         .OrderBy(t => t.Name)
                                         .ToListAsync(cancellationToken)
+                                        
+                                     
         };
 
         return vm;

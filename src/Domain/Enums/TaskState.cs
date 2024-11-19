@@ -2,7 +2,7 @@
 
 public enum TaskState : byte
 {
-    Active,
-    Passive,
-    Paused
+    Active = 1,
+    Passive = 2,
+    Paused = 3
 }

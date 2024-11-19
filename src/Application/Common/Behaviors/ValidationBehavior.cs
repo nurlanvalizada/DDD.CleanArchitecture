@@ -19,8 +19,7 @@ internal sealed class ValidationBehavior<TRequest, TResponse>(IEnumerable<IValid
 
         var context = new ValidationContext<TRequest>(request);
 
-        var validationErrors = validators
-                               .Select(validator => validator.Validate(context))
+        var validationErrors = (await Task.WhenAll(validators.Select(async validator => await validator.ValidateAsync(context, cancellationToken))))
                                .Where(validationResult => validationResult.Errors.Any())
                                .SelectMany(validationResult => validationResult.Errors)
                                .ToList();

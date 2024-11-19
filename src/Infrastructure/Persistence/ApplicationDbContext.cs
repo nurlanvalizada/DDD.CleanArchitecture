@@ -15,9 +15,10 @@ using Microsoft.EntityFrameworkCore.Metadata;
 
 namespace Infrastructure.Persistence;
 
-public class ApplicationDbContext(DbContextOptions options, ICurrentUserService currentUserService, IMediator mediator) : DbContext(options)
+public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IMediator? mediator, ICurrentUserService currentUserService)
+    : DbContext(options)
 {
-    private static readonly MethodInfo ConfigureGlobalFiltersMethodInfo = typeof(ApplicationDbContext)
+    private static readonly MethodInfo? ConfigureGlobalFiltersMethodInfo = typeof(ApplicationDbContext)
         .GetMethod(nameof(ConfigureGlobalFilters), BindingFlags.Instance | BindingFlags.NonPublic);
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
@@ -74,7 +75,7 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
 
         foreach (var entityType in modelBuilder.Model.GetEntityTypes())
         {
-            ConfigureGlobalFiltersMethodInfo
+            ConfigureGlobalFiltersMethodInfo?
                 .MakeGenericMethod(entityType.ClrType)
                 .Invoke(this, [modelBuilder, entityType]);
         }
@@ -84,13 +85,13 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
 
     protected void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder, IMutableEntityType entityType) where TEntity : class
     {
-        if (ShouldFilterEntity<TEntity>(entityType))
+        if(!ShouldFilterEntity<TEntity>(entityType)) 
+            return;
+        
+        var filterExpression = CreateFilterExpression<TEntity>();
+        if (filterExpression != null)
         {
-            var filterExpression = CreateFilterExpression<TEntity>();
-            if (filterExpression != null)
-            {
-                modelBuilder.Entity<TEntity>().HasQueryFilter(filterExpression);
-            }
+            modelBuilder.Entity<TEntity>().HasQueryFilter(filterExpression);
         }
     }
 
@@ -104,9 +105,9 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
         return false;
     }
 
-    protected virtual Expression<Func<TEntity, bool>> CreateFilterExpression<TEntity>() where TEntity : class
+    protected virtual Expression<Func<TEntity, bool>>? CreateFilterExpression<TEntity>() where TEntity : class
     {
-        Expression<Func<TEntity, bool>> expression = null;
+        Expression<Func<TEntity, bool>>? expression = null;
 
         if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
         {
@@ -123,14 +124,16 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
 
     protected virtual void SetCreationAuditProperties(EntityEntry entry)
     {
-        if (!(entry.Entity is IHasCreationTime hasCreationTimeEntity)) return;
+        if (entry.Entity is not IHasCreationTime hasCreationTimeEntity) 
+            return;
 
         if (hasCreationTimeEntity.CreatedDate == default)
         {
             hasCreationTimeEntity.CreatedDate = DateTime.Now;
         }
 
-        if (!(entry.Entity is ICreationAudited creationAuditedEntity)) return;
+        if (entry.Entity is not ICreationAudited creationAuditedEntity) 
+            return;
 
         if (creationAuditedEntity.CreatedUserId != null)
         {
@@ -143,14 +146,13 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
 
     protected virtual void SetModificationAuditProperties(EntityEntry entry)
     {
-        if (!(entry.Entity is IHasModificationTime hasModificationTimeEntity)) return;
+        if (entry.Entity is not IHasModificationTime hasModificationTimeEntity) 
+            return;
 
-        if (hasModificationTimeEntity.LastModifiedDate == default)
-        {
-            hasModificationTimeEntity.LastModifiedDate = DateTime.Now;
-        }
+        hasModificationTimeEntity.LastModifiedDate ??= DateTime.Now;
 
-        if (!(entry.Entity is IModificationAudited modificationAuditedEntity)) return;
+        if (entry.Entity is not IModificationAudited modificationAuditedEntity) 
+            return;
 
         if (modificationAuditedEntity.LastModifiedUserId != null)
         {
@@ -164,14 +166,13 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
     protected virtual void SetDeletionAuditProperties(EntityEntry entry)
     {
 
-        if (!(entry.Entity is IHasDeletionTime hasDeletionTimeEntity)) return;
+        if (entry.Entity is not IHasDeletionTime hasDeletionTimeEntity) 
+            return;
 
-        if (hasDeletionTimeEntity.DeletedDate == default)
-        {
-            hasDeletionTimeEntity.DeletedDate = DateTime.Now;
-        }
+        hasDeletionTimeEntity.DeletedDate ??= DateTime.Now;
 
-        if (!(entry.Entity is IDeletionAudited deletionAuditedEntity)) return;
+        if (entry.Entity is not IDeletionAudited deletionAuditedEntity) 
+            return;
 
         deletionAuditedEntity.DeletedUserId = currentUserService.UserId;
         deletionAuditedEntity.DeletedDate = DateTime.Now;
@@ -179,10 +180,8 @@ public class ApplicationDbContext(DbContextOptions options, ICurrentUserService 
 
     protected virtual void CancelDeletionForSoftDelete(EntityEntry entry)
     {
-        if (!(entry.Entity is ISoftDelete))
-        {
+        if (entry.Entity is not ISoftDelete)
             return;
-        }
 
         entry.Reload();
         entry.State = EntityState.Modified;

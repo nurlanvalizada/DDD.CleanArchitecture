@@ -28,7 +28,7 @@ public class TaskControllerIntegrationTest(CustomWebApplicationFactory<Program> 
         await context.Database.EnsureDeletedAsync();
         await context.Database.EnsureCreatedAsync();
 
-        await SeedData.PopulateTestData(context);
+        await SeedData.PopulateTestDataAsync(context);
     }
 
     public Task DisposeAsync()

@@ -54,4 +54,7 @@ app.MapControllers();
 app.Run();
 
 //used by test projects
-public partial class Program;
+namespace Web
+{
+    public partial class Program;
+}

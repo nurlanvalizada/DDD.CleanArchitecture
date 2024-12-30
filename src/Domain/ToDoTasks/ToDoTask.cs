@@ -1,9 +1,9 @@
 ﻿using System;
 using AppDomain.Common.Entities;
-using AppDomain.Enums;
-using AppDomain.Events;
+using AppDomain.Entities;
+using AppDomain.ToDoTasks.Events;
 
-namespace AppDomain.Entities;
+namespace AppDomain.ToDoTasks;
 
 /// <summary>
 /// Name is TodoTask to avoid conflict with System.Threading.Tasks.Task

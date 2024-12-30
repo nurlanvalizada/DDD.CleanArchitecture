@@ -1,6 +1,5 @@
 ﻿using System;
-using AppDomain.Entities;
-using AppDomain.Enums;
+using AppDomain.ToDoTasks;
 using Application.Common.Mappings;
 
 namespace Application.Tasks.Queries.GetTasks;

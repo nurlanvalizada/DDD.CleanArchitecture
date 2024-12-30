@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
 using AppDomain.Entities;
 
-namespace AppDomain.Services;
+namespace AppDomain.ToDoTasks.Services;
 
 public interface ITaskManger
 {

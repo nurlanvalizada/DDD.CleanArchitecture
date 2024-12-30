@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Threading;
 using System.Threading.Tasks;
-using AppDomain.Events;
+using AppDomain.ToDoTasks.Events;
 using MediatR;
 
-namespace AppDomain.Handlers;
+namespace AppDomain.ToDoTasks.EventHandlers;
 
 public class TaskCompletedEmailNotificationHandler : INotificationHandler<TaskCompletedEvent>
 {

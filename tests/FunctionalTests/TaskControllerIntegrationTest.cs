@@ -3,14 +3,14 @@ using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
-using AppDomain.Entities;
-using AppDomain.Enums;
+using AppDomain.ToDoTasks;
 using Application.Tasks.Commands.CreateTask;
 using Application.Tasks.Commands.UpdateTask;
 using Application.Tasks.Queries.GetTasks;
 using Infrastructure.Persistence;
 using Microsoft.Extensions.DependencyInjection;
 using Newtonsoft.Json;
+using Web;
 using Xunit;
 
 namespace FunctionalTests;

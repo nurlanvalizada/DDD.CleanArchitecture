@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using AppDomain.Common.DomainEvents;
 using AppDomain.Common.Entities;
 using AppDomain.Entities;
+using AppDomain.ToDoTasks;
 using Application.Common.Interfaces;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -23,9 +24,9 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     public override async Task<int> SaveChangesAsync(CancellationToken cancellationToken = new())
     {
-        foreach (var entry in ChangeTracker.Entries<IAudited>())
+        foreach(var entry in ChangeTracker.Entries<IAudited>())
         {
-            switch (entry.State)
+            switch(entry.State)
             {
                 case EntityState.Added:
                     SetCreationAuditProperties(entry);
@@ -43,18 +44,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
         int result = await base.SaveChangesAsync(cancellationToken).ConfigureAwait(false);
 
         // ignore events if no dispatcher provided
-        if (mediator == null) 
+        if(mediator == null)
             return result;
 
         // dispatch events only if save was successful
         var events = ChangeTracker.Entries<IHaveDomainEvents>()
-                                              .Select(e => e.Entity)
-                                              .SelectMany(entity =>
-                                              {
-                                                  var domainEvents = entity.GetDomainEvents();
-                                                  entity.ClearDomainEvents();
-                                                  return domainEvents;
-                                              }).ToArray();
+                                  .Select(e => e.Entity)
+                                  .SelectMany(entity =>
+                                  {
+                                      var domainEvents = entity.GetDomainEvents();
+                                      entity.ClearDomainEvents();
+                                      return domainEvents;
+                                  }).ToArray();
         foreach(var @event in events)
         {
             await mediator.Publish(@event, cancellationToken).ConfigureAwait(false);
@@ -73,7 +74,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
         base.OnModelCreating(modelBuilder);
 
-        foreach (var entityType in modelBuilder.Model.GetEntityTypes())
+        foreach(var entityType in modelBuilder.Model.GetEntityTypes())
         {
             ConfigureGlobalFiltersMethodInfo?
                 .MakeGenericMethod(entityType.ClrType)
@@ -85,11 +86,11 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected void ConfigureGlobalFilters<TEntity>(ModelBuilder modelBuilder, IMutableEntityType entityType) where TEntity : class
     {
-        if(!ShouldFilterEntity<TEntity>(entityType)) 
+        if(!ShouldFilterEntity<TEntity>(entityType))
             return;
-        
+
         var filterExpression = CreateFilterExpression<TEntity>();
-        if (filterExpression != null)
+        if(filterExpression != null)
         {
             modelBuilder.Entity<TEntity>().HasQueryFilter(filterExpression);
         }
@@ -97,7 +98,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected virtual bool ShouldFilterEntity<TEntity>(IMutableEntityType entityType) where TEntity : class
     {
-        if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+        if(typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
         {
             return true;
         }
@@ -109,7 +110,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
     {
         Expression<Func<TEntity, bool>>? expression = null;
 
-        if (typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
+        if(typeof(ISoftDelete).IsAssignableFrom(typeof(TEntity)))
         {
             Expression<Func<TEntity, bool>> softDeleteFilter = e => !((ISoftDelete)e).IsDeleted;
             expression = softDeleteFilter;
@@ -124,18 +125,18 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected virtual void SetCreationAuditProperties(EntityEntry entry)
     {
-        if (entry.Entity is not IHasCreationTime hasCreationTimeEntity) 
+        if(entry.Entity is not IHasCreationTime hasCreationTimeEntity)
             return;
 
-        if (hasCreationTimeEntity.CreatedDate == default)
+        if(hasCreationTimeEntity.CreatedDate == default)
         {
             hasCreationTimeEntity.CreatedDate = DateTime.Now;
         }
 
-        if (entry.Entity is not ICreationAudited creationAuditedEntity) 
+        if(entry.Entity is not ICreationAudited creationAuditedEntity)
             return;
 
-        if (creationAuditedEntity.CreatedUserId != null)
+        if(creationAuditedEntity.CreatedUserId != null)
         {
             //CreatedUserId is already set
             return;
@@ -146,15 +147,15 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected virtual void SetModificationAuditProperties(EntityEntry entry)
     {
-        if (entry.Entity is not IHasModificationTime hasModificationTimeEntity) 
+        if(entry.Entity is not IHasModificationTime hasModificationTimeEntity)
             return;
 
         hasModificationTimeEntity.LastModifiedDate ??= DateTime.Now;
 
-        if (entry.Entity is not IModificationAudited modificationAuditedEntity) 
+        if(entry.Entity is not IModificationAudited modificationAuditedEntity)
             return;
 
-        if (modificationAuditedEntity.LastModifiedUserId != null)
+        if(modificationAuditedEntity.LastModifiedUserId != null)
         {
             //LastModifiedUserId is already set
             return;
@@ -165,13 +166,12 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected virtual void SetDeletionAuditProperties(EntityEntry entry)
     {
-
-        if (entry.Entity is not IHasDeletionTime hasDeletionTimeEntity) 
+        if(entry.Entity is not IHasDeletionTime hasDeletionTimeEntity)
             return;
 
         hasDeletionTimeEntity.DeletedDate ??= DateTime.Now;
 
-        if (entry.Entity is not IDeletionAudited deletionAuditedEntity) 
+        if(entry.Entity is not IDeletionAudited deletionAuditedEntity)
             return;
 
         deletionAuditedEntity.DeletedUserId = currentUserService.UserId;
@@ -180,7 +180,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
 
     protected virtual void CancelDeletionForSoftDelete(EntityEntry entry)
     {
-        if (entry.Entity is not ISoftDelete)
+        if(entry.Entity is not ISoftDelete)
             return;
 
         entry.Reload();

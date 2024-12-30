@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using AppDomain.Enums;
+using AppDomain.ToDoTasks;
 
 namespace Application.Tasks.Queries.GetTasks;
 

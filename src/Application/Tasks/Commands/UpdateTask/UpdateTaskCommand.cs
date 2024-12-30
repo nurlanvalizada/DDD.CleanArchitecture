@@ -2,8 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using AppDomain.Common.Interfaces;
-using AppDomain.Entities;
-using AppDomain.Enums;
+using AppDomain.ToDoTasks;
 using Application.Common.Exceptions;
 using Application.Common.Mappings;
 using AutoMapper;

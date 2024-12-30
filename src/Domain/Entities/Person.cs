@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using AppDomain.Common.Entities;
+using AppDomain.ToDoTasks;
 using AppDomain.ValueObjects;
 
 namespace AppDomain.Entities;

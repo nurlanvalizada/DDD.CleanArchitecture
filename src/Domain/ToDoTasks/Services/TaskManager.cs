@@ -3,9 +3,8 @@ using System.Threading.Tasks;
 using AppDomain.Common.Exceptions;
 using AppDomain.Common.Interfaces;
 using AppDomain.Entities;
-using AppDomain.Enums;
 
-namespace AppDomain.Services;
+namespace AppDomain.ToDoTasks.Services;
 
 public class TaskManager(IRepository<ToDoTask, Guid> taskRepository) : ITaskManger
 {

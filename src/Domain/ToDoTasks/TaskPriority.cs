@@ -1,4 +1,4 @@
-﻿namespace AppDomain.Enums;
+﻿namespace AppDomain.ToDoTasks;
 
 public enum TaskPriority : byte
 {

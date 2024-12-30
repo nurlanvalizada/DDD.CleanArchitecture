@@ -1,4 +1,4 @@
-﻿using AppDomain.Entities;
+﻿using AppDomain.ToDoTasks;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 

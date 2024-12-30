@@ -1,7 +1,6 @@
 ﻿using AppDomain.Common.DomainEvents;
-using AppDomain.Entities;
 
-namespace AppDomain.Events;
+namespace AppDomain.ToDoTasks.Events;
 
 public class TaskCompletedEvent(ToDoTask completedTask) : BaseDomainEvent
 {

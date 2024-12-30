@@ -1,6 +1,5 @@
 using AppDomain.Entities;
 using Infrastructure.Persistence;
-using Microsoft.EntityFrameworkCore;
 
 namespace IntegrationTests.Data;
 

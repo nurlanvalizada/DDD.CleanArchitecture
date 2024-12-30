@@ -1,6 +1,4 @@
-﻿using AppDomain.Common.DomainEvents;
-
-namespace AppDomain.Common.Entities;
+﻿namespace AppDomain.Common.Entities;
 
 public abstract class Entity<T> : IEntity
 {

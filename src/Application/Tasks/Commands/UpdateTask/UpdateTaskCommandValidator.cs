@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppDomain.Common.Interfaces;
 using AppDomain.Entities;
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tasks.Commands.UpdateTask;
 

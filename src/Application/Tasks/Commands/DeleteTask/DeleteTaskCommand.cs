@@ -17,15 +17,15 @@ public class DeleteTaskCommandHandler(IRepository<ToDoTask, Guid> taskRepository
 {
     public async Task Handle(DeleteTaskCommand request, CancellationToken cancellationToken)
     {
-        var entity = await taskRepository.GetFirst(request.Id);
+        var entity = await taskRepository.GetFirstAsync(request.Id, cancellationToken);
 
         if (entity == null)
         {
             throw new NotFoundException(nameof(ToDoTask), request.Id);
         }
 
-        await taskRepository.Delete(entity);
+        await taskRepository.DeleteAsync(entity);
 
-        await taskRepository.Commit(cancellationToken);
+        await taskRepository.CommitAsync(cancellationToken);
     }
 }

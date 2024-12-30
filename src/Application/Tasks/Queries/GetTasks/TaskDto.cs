@@ -5,7 +5,7 @@ using Application.Common.Mappings;
 
 namespace Application.Tasks.Queries.GetTasks;
 
-public class TaskDto : IMapFrom<ToDoTask>
+public record TaskDto : IMapFrom<ToDoTask>
 {
     public Guid Id { get; set; }
 

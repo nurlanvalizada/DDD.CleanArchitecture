@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Threading;
 using System.Threading.Tasks;
@@ -8,53 +7,39 @@ using AppDomain.Common.Entities;
 
 namespace AppDomain.Common.Interfaces;
 
-public interface IRepository<TEntity, in TPrimaryKey> : IDisposable where TEntity : BaseEntity<TPrimaryKey>
+public interface IRepository<TEntity, in TPrimaryKey> : IDisposable where TEntity : AggregateRoot<TPrimaryKey>
 {
-    IQueryable<TEntity> GetAll();
+    Task<List<TEntity>> GetAllListAsync(CancellationToken cancellationToken = default);
 
-    IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] includeProperties);
+    Task<List<TEntity>> GetAllListIncludingAsync(CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties);
 
-    Task<List<TEntity>> GetAllList();
+    Task<TEntity> GetFirstAsync(TPrimaryKey id, CancellationToken cancellationToken = default);
 
-    Task<List<TEntity>> GetAllListIncluding(params Expression<Func<TEntity, object>>[] includeProperties);
+    Task<TEntity> GetFirstIncludingAsync(TPrimaryKey id, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties);
 
-    ValueTask<TEntity> Find(TPrimaryKey id);
+    Task<TEntity> GetFirstAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetFirst(TPrimaryKey id);
+    Task<TEntity> GetFirstIncludingAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties);
+    
+    Task<List<TEntity>> FilterAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetFirstIncluding(TPrimaryKey id, params Expression<Func<TEntity, object>>[] includeProperties);
+    Task<List<TEntity>> FilterIncludingAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties);
 
-    Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate);
+    Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetFirstIncluding(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
+    Task<bool> AllAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetSingle(TPrimaryKey id);
+    Task<int> CountAsync(CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetSingleIncluding(TPrimaryKey id, params Expression<Func<TEntity, object>>[] includeProperties);
+    Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate);
+    Task AddAsync(TEntity entity,CancellationToken cancellationToken = default);
 
-    Task<TEntity> GetSingleIncluding(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
+    Task UpdateAsync(TEntity entity,CancellationToken cancellationToken = default);
 
-    IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate);
+    Task DeleteAsync(TEntity entity,CancellationToken cancellationToken = default);
 
-    IQueryable<TEntity> FindByIncluding(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties);
+    Task DeleteWhereAsync(Expression<Func<TEntity, bool>> predicate,CancellationToken cancellationToken = default);
 
-    Task<bool> Any(Expression<Func<TEntity, bool>> predicate);
-
-    Task<bool> All(Expression<Func<TEntity, bool>> predicate);
-
-    Task<int> Count();
-
-    Task<int> Count(Expression<Func<TEntity, bool>> predicate);
-
-    Task Add(TEntity entity);
-
-    Task Update(TEntity entity);
-
-    Task Delete(TEntity entity);
-
-    Task DeleteWhere(Expression<Func<TEntity, bool>> predicate);
-
-    Task Commit(CancellationToken cancellationToken);
+    Task CommitAsync(CancellationToken cancellationToken);
 }

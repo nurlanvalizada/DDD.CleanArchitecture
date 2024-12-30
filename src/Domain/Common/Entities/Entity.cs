@@ -2,7 +2,7 @@
 
 namespace AppDomain.Common.Entities;
 
-public abstract class BaseEntity<T> : HaveDomainEvents, IEntity
+public abstract class Entity<T> : IEntity
 {
     public T Id { get; init; }
 }

@@ -11,144 +11,108 @@ using Microsoft.EntityFrameworkCore;
 namespace Infrastructure.Persistence;
 
 public class EfRepository<TEntity, TPrimaryKey>(ApplicationDbContext dbContext) : IRepository<TEntity, TPrimaryKey>
-    where TEntity : BaseEntity<TPrimaryKey>
+    where TEntity : AggregateRoot<TPrimaryKey>
 {
     private DbSet<TEntity> Table => dbContext.Set<TEntity>();
 
-    public IQueryable<TEntity> GetAll()
+    public async Task<List<TEntity>> GetAllListAsync(CancellationToken cancellationToken = default)
     {
-        IQueryable<TEntity> query = Table;
-        return query;
+        return await GetAll().ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] includeProperties)
-    {
-        var query = GetAll();
-        BindIncludeProperties(query, includeProperties);
-        includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query;
-    }
-
-    public async Task<List<TEntity>> GetAllList()
-    {
-        return await GetAll().ToListAsync();
-    }
-
-    public Task<List<TEntity>> GetAllListIncluding(params Expression<Func<TEntity, object>>[] includeProperties)
+    public Task<List<TEntity>> GetAllListIncludingAsync(CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties)
     {
         var query = GetAll();
         includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query.ToListAsync();
+        return query.ToListAsync(cancellationToken: cancellationToken);
     }
 
-    public ValueTask<TEntity> Find(TPrimaryKey id)
+    public Task<TEntity> GetFirstAsync(TPrimaryKey id, CancellationToken cancellationToken = default)
     {
-        return Table.FindAsync(id);
+        return GetAll().FirstOrDefaultAsync(CreateEqualityExpressionForId(id), cancellationToken: cancellationToken);
     }
 
-    public Task<TEntity> GetFirst(TPrimaryKey id)
-    {
-        return GetAll().FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
-    }
-
-    public Task<TEntity> GetFirstIncluding(TPrimaryKey id, params Expression<Func<TEntity, object>>[] includeProperties)
+    public Task<TEntity> GetFirstIncludingAsync(TPrimaryKey id, CancellationToken cancellationToken = default, params Expression<Func<TEntity, object>>[] includeProperties)
     {
         var query = GetAll();
         query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query.FirstOrDefaultAsync(CreateEqualityExpressionForId(id));
+        return query.FirstOrDefaultAsync(CreateEqualityExpressionForId(id), cancellationToken: cancellationToken);
     }
 
-    public Task<TEntity> GetFirst(Expression<Func<TEntity, bool>> predicate)
+    public Task<TEntity> GetFirstAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return GetAll().FirstOrDefaultAsync(predicate);
+        return GetAll().FirstOrDefaultAsync(predicate, cancellationToken);
     }
 
-    public Task<TEntity> GetFirstIncluding(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
-    {
-        var query = GetAll();
-        query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query.FirstOrDefaultAsync(predicate);
-    }
-
-    public Task<TEntity> GetSingle(TPrimaryKey id)
-    {
-        return GetAll().SingleOrDefaultAsync(CreateEqualityExpressionForId(id));
-    }
-
-    public Task<TEntity> GetSingleIncluding(TPrimaryKey id, params Expression<Func<TEntity, object>>[] includeProperties)
+    public Task<TEntity> GetFirstIncludingAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default,
+                                                params Expression<Func<TEntity, object>>[] includeProperties)
     {
         var query = GetAll();
         query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query.SingleOrDefaultAsync(CreateEqualityExpressionForId(id));
+        return query.FirstOrDefaultAsync(predicate, cancellationToken: cancellationToken);
     }
 
-    public Task<TEntity> GetSingle(Expression<Func<TEntity, bool>> predicate)
+    public Task<List<TEntity>> FilterAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
-        return GetAll().SingleOrDefaultAsync(predicate);
+        return GetAll().Where(predicate).ToListAsync(cancellationToken);
     }
 
-    public Task<TEntity> GetSingleIncluding(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
-    {
-        var query = GetAll();
-        query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query.SingleOrDefaultAsync(predicate);
-    }
-
-    public IQueryable<TEntity> FindBy(Expression<Func<TEntity, bool>> predicate)
-    {
-        return GetAll().Where(predicate);
-    }
-
-    public IQueryable<TEntity> FindByIncluding(Expression<Func<TEntity, bool>> predicate, params Expression<Func<TEntity, object>>[] includeProperties)
+    public Task<List<TEntity>> FilterIncludingAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default,
+                                                    params Expression<Func<TEntity, object>>[] includeProperties)
     {
         var query = GetAll();
         query = includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
-        return query.Where(predicate);
+        return query.Where(predicate).ToListAsync(cancellationToken);
     }
 
-    public Task<bool> Any(Expression<Func<TEntity, bool>> predicate)
+    public Task<bool> AnyAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return Table.AnyAsync(predicate);
     }
 
-    public Task<bool> All(Expression<Func<TEntity, bool>> predicate)
+    public Task<bool> AllAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return Table.AllAsync(predicate);
     }
 
-    public async Task<int> Count()
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
     {
         return await Table.CountAsync();
     }
 
-    public Task<int> Count(Expression<Func<TEntity, bool>> predicate)
+    public Task<int> CountAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         return Table.CountAsync(predicate);
     }
 
-    public async Task Add(TEntity entity)
+    public async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         await Table.AddAsync(entity);
     }
 
-    public async Task Update(TEntity entity)
+    public async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         dbContext.Entry(entity).State = EntityState.Modified;
     }
 
-    public async Task Delete(TEntity entity)
+    public async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
     {
         dbContext.Entry(entity).State = EntityState.Deleted;
     }
 
-    public async Task DeleteWhere(Expression<Func<TEntity, bool>> predicate)
+    public async Task DeleteWhereAsync(Expression<Func<TEntity, bool>> predicate, CancellationToken cancellationToken = default)
     {
         IEnumerable<TEntity> entities = Table.Where(predicate);
 
-        foreach (var entity in entities)
+        foreach(var entity in entities)
         {
             dbContext.Entry(entity).State = EntityState.Deleted;
         }
+    }
+
+    public async Task CommitAsync(CancellationToken cancellationToken = default)
+    {
+        await dbContext.SaveChangesAsync(cancellationToken);
     }
 
     private static void BindIncludeProperties(IQueryable<TEntity> query, IEnumerable<Expression<Func<TEntity, object>>> includeProperties)
@@ -168,9 +132,18 @@ public class EfRepository<TEntity, TPrimaryKey>(ApplicationDbContext dbContext) 
         return Expression.Lambda<Func<TEntity, bool>>(lambdaBody, lambdaParam);
     }
 
-    public async Task Commit(CancellationToken cancellationToken = new())
+    private IQueryable<TEntity> GetAll()
     {
-        await dbContext.SaveChangesAsync(cancellationToken);
+        IQueryable<TEntity> query = Table;
+        return query;
+    }
+
+    private IQueryable<TEntity> GetAllIncluding(params Expression<Func<TEntity, object>>[] includeProperties)
+    {
+        var query = GetAll();
+        BindIncludeProperties(query, includeProperties);
+        includeProperties.Aggregate(query, (current, includeProperty) => current.Include(includeProperty));
+        return query;
     }
 
     public void Dispose()

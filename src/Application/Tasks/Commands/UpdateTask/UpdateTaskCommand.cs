@@ -26,7 +26,7 @@ public class UpdateTaskCommandHandler(IRepository<ToDoTask, Guid> taskRepository
 {
     public async Task Handle(UpdateTaskCommand request, CancellationToken cancellationToken)
     {
-        var task = await taskRepository.GetFirst(request.Id);
+        var task = await taskRepository.GetFirstAsync(request.Id, cancellationToken);
 
         if (task == null)
         {
@@ -40,6 +40,6 @@ public class UpdateTaskCommandHandler(IRepository<ToDoTask, Guid> taskRepository
         else
             task.MarkUnComplete();
 
-        await taskRepository.Commit(cancellationToken);
+        await taskRepository.CommitAsync(cancellationToken);
     }
 }

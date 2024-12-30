@@ -11,7 +11,7 @@ using MediatR;
 
 namespace Application.Tasks.Commands.CreateTask;
 
-public class CreateTaskCommand : IRequest<Guid>, IMapTo<ToDoTask>
+public record CreateTaskCommand : IRequest<Guid>, IMapTo<ToDoTask>
 {
     public string Name { get; set; }
 
@@ -38,13 +38,13 @@ public class CreateTaskCommandHandler(IRepository<ToDoTask, Guid> taskRepository
 
         if (request.AssignedPersonId != null)
         {
-            var person = await personRepository.GetFirst(request.AssignedPersonId.Value);
+            var person = await personRepository.GetFirstAsync(request.AssignedPersonId.Value, cancellationToken);
             await taskManager.AssignTaskToPerson(task, person);
         }
 
-        await taskRepository.Add(task);
+        await taskRepository.AddAsync(task);
 
-        await taskRepository.Commit(cancellationToken);
+        await taskRepository.CommitAsync(cancellationToken);
 
         return task.Id;
     }

@@ -1,17 +1,16 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using AppDomain.Common.Interfaces;
 using AppDomain.Entities;
 using AutoMapper;
-using AutoMapper.QueryableExtensions;
 using MediatR;
-using Microsoft.EntityFrameworkCore;
 
 namespace Application.Tasks.Queries.GetTasks;
 
-public class GetTasksQuery : IRequest<TasksVm>
+public record GetTasksQuery : IRequest<TasksVm>
 {
     public string Name { get; set; }
 }
@@ -20,14 +19,13 @@ public class GetTasksQueryHandler(IMapper mapper, IRepository<ToDoTask, Guid> ta
 {
     public async Task<TasksVm> Handle(GetTasksQuery request, CancellationToken cancellationToken)
     {
+        var tasks = await taskRepository.FilterAsync(t => string.IsNullOrWhiteSpace(request.Name) || t.Name.Contains(request.Name), cancellationToken);
+
+        var tasksDto = mapper.Map<List<TaskDto>>(tasks.OrderBy(t => t.Name));
+        
         var vm = new TasksVm
         {
-            Tasks = await taskRepository.GetAll().Where(t => string.IsNullOrWhiteSpace(request.Name) || t.Name.Contains(request.Name))
-                                        .ProjectTo<TaskDto>(mapper.ConfigurationProvider)
-                                        .OrderBy(t => t.Name)
-                                        .ToListAsync(cancellationToken)
-                                        
-                                     
+            Tasks = tasksDto  
         };
 
         return vm;

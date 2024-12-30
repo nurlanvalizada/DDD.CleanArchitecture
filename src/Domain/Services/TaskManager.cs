@@ -33,7 +33,7 @@ public class TaskManager(IRepository<ToDoTask, Guid> taskRepository) : ITaskMang
 
     private async Task<bool> HasPersonMaximumAssignedTask(Person person)
     {
-        var assignedTaskCount = await taskRepository.Count(t => t.State == TaskState.Active && t.AssignedPersonId == person.Id);
+        var assignedTaskCount = await taskRepository.CountAsync(t => t.State == TaskState.Active && t.AssignedPersonId == person.Id);
         return assignedTaskCount >= MaxActiveTaskCountForAPerson;
     }
 }

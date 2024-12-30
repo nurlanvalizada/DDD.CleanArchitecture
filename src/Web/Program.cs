@@ -1,4 +1,3 @@
-
 using AppDomain;
 using Application;
 using Infrastructure;
@@ -54,4 +53,5 @@ app.MapControllers();
 
 app.Run();
 
+//used by test projects
 public partial class Program;

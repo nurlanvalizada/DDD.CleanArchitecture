@@ -21,8 +21,8 @@ public class CreateTaskCommandValidator : AbstractValidator<CreateTaskCommand>
             .MustAsync(BeUniqueTitle).WithMessage("The specified name already exists.");
     }
 
-    public async Task<bool> BeUniqueTitle(string name, CancellationToken cancellationToken)
+    private async Task<bool> BeUniqueTitle(string name, CancellationToken cancellationToken)
     {
-        return await _taskRepository.All(l => l.Name != name);
+        return await _taskRepository.AllAsync(l => l.Name != name, cancellationToken);
     }
 }

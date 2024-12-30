@@ -25,8 +25,6 @@ public class UpdateTaskCommandValidator : AbstractValidator<UpdateTaskCommand>
 
     private async Task<bool> BeUniqueTitle(UpdateTaskCommand model, string name, CancellationToken cancellationToken)
     {
-        return await _todoListRepository.GetAll()
-                                        .Where(l => l.Id != model.Id)
-                                        .AllAsync(l => l.Name != name, cancellationToken);
+        return await _todoListRepository.AllAsync(l => l.Id != model.Id && l.Name != name, cancellationToken);
     }
 }

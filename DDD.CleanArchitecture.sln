@@ -15,9 +15,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Infrastructure", "src\Infra
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Web", "src\Web\Web.csproj", "{CFF7EF3C-1DE4-42AE-A0CE-F15091B44266}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\AppDomain.Tests\UnitTests.csproj", "{8FDE87EC-EBF4-425B-AD2C-2FF68526C114}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "tests\UnitTests\UnitTests.csproj", "{8FDE87EC-EBF4-425B-AD2C-2FF68526C114}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IntegrationTests", "tests\Web.IntegratationTests\IntegrationTests.csproj", "{9A52E99D-F6D1-4AE5-8331-3AE8F5DE9ACF}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "FunctionalTests", "tests\FunctionalTests\FunctionalTests.csproj", "{9A52E99D-F6D1-4AE5-8331-3AE8F5DE9ACF}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "IntegrationTests", "tests\IntegrationTests\IntegrationTests.csproj", "{0A7BAD32-984C-4CB4-8BEE-E102F7DB1D86}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -49,6 +51,10 @@ Global
 		{9A52E99D-F6D1-4AE5-8331-3AE8F5DE9ACF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{9A52E99D-F6D1-4AE5-8331-3AE8F5DE9ACF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{9A52E99D-F6D1-4AE5-8331-3AE8F5DE9ACF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0A7BAD32-984C-4CB4-8BEE-E102F7DB1D86}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0A7BAD32-984C-4CB4-8BEE-E102F7DB1D86}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0A7BAD32-984C-4CB4-8BEE-E102F7DB1D86}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0A7BAD32-984C-4CB4-8BEE-E102F7DB1D86}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -60,6 +66,7 @@ Global
 		{CFF7EF3C-1DE4-42AE-A0CE-F15091B44266} = {B5186A81-34C1-4CD3-A8C5-EE3712C1EEB2}
 		{8FDE87EC-EBF4-425B-AD2C-2FF68526C114} = {2AFA2085-63F8-482E-AF59-AE59B5871596}
 		{9A52E99D-F6D1-4AE5-8331-3AE8F5DE9ACF} = {2AFA2085-63F8-482E-AF59-AE59B5871596}
+		{0A7BAD32-984C-4CB4-8BEE-E102F7DB1D86} = {2AFA2085-63F8-482E-AF59-AE59B5871596}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {266D6F7F-7EF1-4C2D-AB0F-96ACBFB5AB52}

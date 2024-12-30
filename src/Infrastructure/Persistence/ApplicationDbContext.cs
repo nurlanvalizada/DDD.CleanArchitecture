@@ -47,7 +47,7 @@ public class ApplicationDbContext(DbContextOptions<ApplicationDbContext> options
             return result;
 
         // dispatch events only if save was successful
-        var events = ChangeTracker.Entries<HaveDomainEvents>()
+        var events = ChangeTracker.Entries<IHaveDomainEvents>()
                                               .Select(e => e.Entity)
                                               .SelectMany(entity =>
                                               {

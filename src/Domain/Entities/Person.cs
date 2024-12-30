@@ -5,7 +5,7 @@ using AppDomain.ValueObjects;
 
 namespace AppDomain.Entities;
 
-public class Person : BaseEntity<Guid>
+public class Person : AggregateRoot<Guid>
 {
     private readonly List<ToDoTask> _tasks = [];
     

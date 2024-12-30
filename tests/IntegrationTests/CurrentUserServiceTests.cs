@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Http;
 using Web.Services;
-using Xunit;
 
 namespace IntegrationTests;
 

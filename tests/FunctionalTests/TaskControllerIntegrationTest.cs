@@ -98,5 +98,4 @@ public class TaskControllerIntegrationTest(CustomWebApplicationFactory<Program> 
         Assert.NotNull(updatedTask);
         Assert.Equal("UpdatedTask", updatedTask.Name);
     }
-
 }
